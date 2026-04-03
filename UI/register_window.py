@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QGroupBox, QPushButton
 )
 
-class LoginWindow(QWidget):
+class RegisterWindow(QWidget):
     def __init__(self, manager):
         super().__init__()
         self.init_UI()
@@ -11,7 +11,7 @@ class LoginWindow(QWidget):
     def init_UI(self):
         self.resize(400, 200)
         self.center()
-        self.setWindowTitle("FR:Login")
+        self.setWindowTitle("FR:Register")
 
         self.main_layout = QVBoxLayout()
         self.main_layout.setContentsMargins(20, 20, 20, 20)
@@ -25,20 +25,23 @@ class LoginWindow(QWidget):
         self.login_input.setPlaceholderText("Login...")
         self.password_input = QLineEdit()
         self.password_input.setPlaceholderText("Password...")
+        self.gmail_input = QLineEdit()
+        self.gmail_input.setPlaceholderText("Gmail...")
         self.password_input.setEchoMode(QLineEdit.Password)
 
         self.inputs_layout.addStretch()
         self.inputs_layout.addWidget(self.login_input)
+        self.inputs_layout.addWidget(self.gmail_input)
         self.inputs_layout.addWidget(self.password_input)
         self.inputs_layout.addStretch()
 
         self.login_btn_layout = QHBoxLayout()
-        self.login_btn = QPushButton("Login")
-        self.login_btn.setStyleSheet("background-color: #a6f299; color: black;")
-        self.switch = QPushButton("Register")
-        self.login_btn.setFixedSize(100, 30)
+        self.reg_btn = QPushButton("Register")
+        self.reg_btn.setStyleSheet("background-color: #a6f299; color: black;")
+        self.switch = QPushButton("Login")
+        self.reg_btn.setFixedSize(100, 30)
         self.switch.setFixedSize(100, 30)
-        self.login_btn_layout.addWidget(self.login_btn)
+        self.login_btn_layout.addWidget(self.reg_btn)
         self.login_btn_layout.addWidget(self.switch)
         self.login_btn_layout.addStretch()
 
@@ -50,7 +53,7 @@ class LoginWindow(QWidget):
 
         self.setLayout(self.main_layout)
 
-        self.switch.clicked.connect(lambda: self.manager.switch("register"))
+        self.switch.clicked.connect(lambda: self.manager.switch("login"))
 
 
     def center(self):

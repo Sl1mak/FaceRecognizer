@@ -1,10 +1,26 @@
 import sys
 
 from UI.login_window import LoginWindow
+from UI.register_window import RegisterWindow
 from PyQt5.QtWidgets import QApplication
+
+class WindowManager:
+    def __init__(self):
+        self.login_window = LoginWindow(self)
+        self.register_window = RegisterWindow(self)
+
+        self.windows = {
+            "login": self.login_window,
+            "register": self.register_window
+        }
+
+    def switch(self, window_name):
+        for window in self.windows.values():
+            window.hide()
+        self.windows[window_name].show()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    login_window = LoginWindow()
-    login_window.show()
+    manager = WindowManager()
+    manager.switch("login")
     sys.exit(app.exec())
