@@ -37,12 +37,14 @@ class RegisterWindow(QWidget):
 
         self.login_btn_layout = QHBoxLayout()
         self.reg_btn = QPushButton("Register")
-        self.reg_btn.setStyleSheet("background-color: #a6f299; color: black;")
+        self.reg_btn.setStyleSheet("background-color: #a6f299; color: black; border: none;")
+        self.login_btn_layout.addStretch()
         self.switch = QPushButton("Login")
+        self.switch.setStyleSheet("background-color: skyblue; color: black; border: none;")
         self.reg_btn.setFixedSize(100, 30)
         self.switch.setFixedSize(100, 30)
-        self.login_btn_layout.addWidget(self.reg_btn)
         self.login_btn_layout.addWidget(self.switch)
+        self.login_btn_layout.addWidget(self.reg_btn)
         self.login_btn_layout.addStretch()
 
         self.inputs_layout.addLayout(self.login_btn_layout)
@@ -53,6 +55,7 @@ class RegisterWindow(QWidget):
 
         self.setLayout(self.main_layout)
 
+        self.reg_btn.clicked.connect(self.register)
         self.switch.clicked.connect(lambda: self.manager.switch("login"))
 
 
@@ -61,3 +64,15 @@ class RegisterWindow(QWidget):
         cp = self.screen().geometry().center()
         qr.moveCenter(cp)
         self.move(qr.topLeft())
+
+    def register(self):
+        login_name = self.login_input.text()
+        password = self.password_input.text()
+        gmail = self.gmail_input.text()
+
+        if not login_name or not password or not gmail:
+            QMessageBox.critical(self, "Error", "Login, gmail or password is empty")
+        elif len(password) < 8:
+            QMessageBox.critical(self, "Error", "Password is too short")
+        else:
+            self.manager.switch("main")
