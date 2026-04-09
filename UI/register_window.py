@@ -76,3 +76,6 @@ class RegisterWindow(QWidget):
             QMessageBox.critical(self, "Error", "Password is too short")
         else:
             self.manager.switch("main")
+
+    def update_user(self):
+        pass
