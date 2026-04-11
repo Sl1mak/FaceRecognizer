@@ -11,12 +11,19 @@ class MainWindow(QWidget):
         self.manager = manager
 
     def init_UI(self):
-        self.resize(400, 200)
+        self.resize(200, 200)
         self.setWindowTitle("FR:Main")
 
         self.main_layout = QVBoxLayout()
         self.main_layout.setContentsMargins(20, 20, 20, 20)
-        self.main_layout.setSpacing(20)
+        self.main_layout.setSpacing(10)
+
+        self.start_btn = QPushButton("Start")
+        self.main_layout.addWidget(self.start_btn)
+        self.setting_btn = QPushButton("Settings")
+        self.main_layout.addWidget(self.setting_btn)
+
+        self.setting_btn.clicked.connect(lambda: self.manager.show("settings"))
 
         self.setLayout(self.main_layout)
 
