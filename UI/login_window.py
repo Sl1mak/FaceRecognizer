@@ -39,11 +39,7 @@ class LoginWindow(QWidget):
         self.login_btn = QPushButton("Login")
         self.login_btn.setStyleSheet("background-color: #a6f299; color: black; border: none;")
         self.login_btn_layout.addStretch()
-        # self.switch = QPushButton("Register")
-        # self.switch.setStyleSheet("background-color: skyblue; color: black; border: none;")
         self.login_btn.setFixedSize(100, 30)
-        # self.switch.setFixedSize(100, 30)
-        # self.login_btn_layout.addWidget(self.switch)
         self.login_btn_layout.addWidget(self.login_btn)
         self.login_btn_layout.addStretch()
 
@@ -56,8 +52,6 @@ class LoginWindow(QWidget):
         self.setLayout(self.main_layout)
 
         self.login_btn.clicked.connect(self.login)
-        # self.switch.clicked.connect(lambda: self.manager.switch("register"))
-
 
     def center(self):
         qr = self.frameGeometry()

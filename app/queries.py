@@ -26,10 +26,43 @@ def login(l_input, p_input):
 
     if bcrypt.checkpw(p_input.encode(), password_hash.encode()):
         return {
-            "user_id": id,
+            "user_id": user_id,
             "username": username,
             "email": email,
             "role": role
         }
     
     return None
+
+def addModel(name, path, user_id):
+    con = get_connection()
+    cursor = con.cursor()
+
+    query = """
+    INSERT INTO models (name, path, user_id)
+    VALUES (%s, %s, %s)
+    """
+
+    cursor.execute(query, (name, path, user_id))
+    con.commit()
+
+    cursor.close()
+    con.close()
+
+def getModels(user_id):
+    con = get_connection()
+    cursor = con.cursor()
+
+    query = """
+    SELECT name, path
+    FROM models
+    WHERE user_id = %s
+    """
+
+    cursor.execute(query, (user_id,))
+    models = cursor.fetchall()
+
+    cursor.close()
+    con.close()
+
+    return models

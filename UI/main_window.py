@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import (
 )
 
 from app.session import Session
+from app.queries import getModels
 
 class MainWindow(QWidget):
     def __init__(self, manager):
@@ -32,3 +33,7 @@ class MainWindow(QWidget):
             if Session.current_user["role"] == "admin":
                 self.reg_btn = QPushButton("New user")
                 self.main_layout.addWidget(self.reg_btn)
+                self.manager.models_list = getModels(Session.current_user["user_id"])
+                print(Session.current_user["user_id"])
+                print(self.manager.models_list)
+
