@@ -1,9 +1,12 @@
 from PyQt5.QtWidgets import (
     QWidget, QLabel, QVBoxLayout, QPushButton
 )
+from PyQt5.QtGui import QPixmap
 
 from app.session import Session
 from app.queries import getModels
+
+from core.webcam_pipeline import WebcamPipeline
 
 class MainWindow(QWidget):
     def __init__(self, manager):
@@ -19,12 +22,17 @@ class MainWindow(QWidget):
         self.main_layout.setContentsMargins(20, 20, 20, 20)
         self.main_layout.setSpacing(10)
 
+        self.camera_label = QLabel(self)
         self.start_btn = QPushButton("Start")
+        self.main_layout.addWidget(self.camera_label)
         self.main_layout.addWidget(self.start_btn)
         self.setting_btn = QPushButton("Settings")
         self.main_layout.addWidget(self.setting_btn)
+        self.camera_label.hide()
 
         self.setting_btn.clicked.connect(lambda: self.manager.show("settings"))
+        self.camera = None
+        self.start_btn.clicked.connect(self.start_process)
 
         self.setLayout(self.main_layout)
 
@@ -37,3 +45,31 @@ class MainWindow(QWidget):
                 print(Session.current_user["user_id"])
                 print(self.manager.models_list)
 
+    def start_process(self):
+        if self.camera is None:
+            self.camera_label.show()
+            self.camera = WebcamPipeline()
+            self.camera.frame_ready.connect(self.update_frame)
+            self.camera.start()
+            self.start_btn.setText("Stop")
+            self.setting_btn.hide()
+            self.reg_btn.hide()
+        else:
+            self.camera.stop()
+            self.camera = None
+            self.start_btn.setText("Start")
+            self.setting_btn.show()
+            self.reg_btn.show()
+            self.camera_label.hide()
+            self.resize(200, 200)
+            self.update()
+        
+
+    def update_frame(self, frame):
+        pixmap = QPixmap.fromImage(frame)
+        self.camera_label.setPixmap(pixmap)
+
+    def closeEvent(self, event):
+        if self.camera:
+            self.camera.stop()
+        event.accept()

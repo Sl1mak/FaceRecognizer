@@ -25,7 +25,7 @@ class ModelsWindow(QWidget):
         self.model_file_btn.clicked.connect(lambda: self.file_dialog(
             self.model_path,
             title="Choose model file",
-            filter="Model files (*.tflite *.oonx *.pt);; All files (*)"
+            filter="Model files (*.tflite);; All files (*)"
             )
         )
         self.confirm_button.clicked.connect(self.confirm_model)

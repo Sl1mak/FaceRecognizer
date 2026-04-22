@@ -21,12 +21,9 @@ class SettingsWindow(QWidget):
         self.model_name.setFixedWidth(50)
 
         self.models_list = QComboBox()
-        for model in self.manager.models_list:
-            self.models_list.addItem(model["model_name"])
 
         self.model_btn = QPushButton("Add")
         self.model_btn.setFixedWidth(40)
-        self.model_row.addWidget(self.model_name)
         self.model_row.addWidget(self.models_list)
         self.model_row.addWidget(self.model_btn)
         self.main_layout.addLayout(self.model_row)
