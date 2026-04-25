@@ -6,9 +6,11 @@ from PyQt5.QtCore import pyqtSignal, QThread
 class WebcamPipeline(QThread):
     frame_ready = pyqtSignal(QImage)
 
-    def __init__(self, camera_index=0):
+    def __init__(self, detector, drawer, camera_index=0):
         super().__init__()
         self.camera_index = camera_index
+        self.detector = detector
+        self.drawer = drawer
         self.running = False
 
     def run(self):
@@ -19,6 +21,12 @@ class WebcamPipeline(QThread):
             ret, frame = self.cap.read()
             if not ret:
                 continue
+
+            if self.detector:
+                detections = self.detector.detect(frame)
+
+                if self.drawer:
+                    frame = self.drawer.draw(frame, detections)
 
             frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
 

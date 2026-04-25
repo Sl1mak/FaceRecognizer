@@ -11,6 +11,9 @@ class WindowManager:
     def __init__(self):
         self.models_list = {}
 
+        self.active_model_name = None
+        self.active_model_path = None
+
         self.login_window = LoginWindow(self)
         self.register_window = RegisterWindow(self)
         self.main_window = MainWindow(self)
@@ -38,3 +41,11 @@ class WindowManager:
     def getModels(self):
         self.models_list = getModels(Session.current_user["user_id"])
         return self.models_list
+
+    def setActiveModel(self, name):
+        for model_name, path in self.models_list:
+            if model_name == name:
+                self.active_model_name = model_name
+                self.active_model_path = path
+                print("Active model: ", self.active_model_name, self.active_model_path)
+                break

@@ -21,6 +21,7 @@ class SettingsWindow(QWidget):
         self.model_name.setFixedWidth(50)
 
         self.models_list = QComboBox()
+        self.models_list.currentTextChanged.connect(self.model_selected)
 
         self.model_btn = QPushButton("Add")
         self.model_btn.setFixedWidth(40)
@@ -37,3 +38,9 @@ class SettingsWindow(QWidget):
         models = self.manager.getModels()
         for model in models:
             self.models_list.addItem(model[0])
+
+        if models and not self.manager.active_model_name:
+            self.manager.setActiveModel(models[0][0])
+
+    def model_selected(self, name):
+        self.manager.setActiveModel(name)

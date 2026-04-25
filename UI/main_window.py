@@ -7,6 +7,8 @@ from app.session import Session
 from app.queries import getModels
 
 from core.webcam_pipeline import WebcamPipeline
+from core.detectors.facenet_detector import FaceNetDetector
+from core.drawer import Drawer
 
 class MainWindow(QWidget):
     def __init__(self, manager):
@@ -46,23 +48,29 @@ class MainWindow(QWidget):
                 print(self.manager.models_list)
 
     def start_process(self):
-        if self.camera is None:
-            self.camera_label.show()
-            self.camera = WebcamPipeline()
-            self.camera.frame_ready.connect(self.update_frame)
-            self.camera.start()
-            self.start_btn.setText("Stop")
-            self.setting_btn.hide()
-            self.reg_btn.hide()
-        else:
-            self.camera.stop()
-            self.camera = None
-            self.start_btn.setText("Start")
-            self.setting_btn.show()
-            self.reg_btn.show()
-            self.camera_label.hide()
-            self.resize(200, 200)
-            self.update()
+        if not self.manager.active_model_path:
+            print("Select model first")
+            return
+
+        self.detector = FaceNetDetector(self.manager.active_model_path, 0.5)
+        self.drawer = Drawer()
+
+        if self.detector and self.drawer:
+            if self.camera is None:
+                self.camera_label.show()
+                self.camera = WebcamPipeline(self.detector, self.drawer)
+                self.camera.frame_ready.connect(self.update_frame)
+                self.camera.start()
+                self.start_btn.setText("Stop")
+                self.setting_btn.hide()
+                self.reg_btn.hide()
+            else:
+                self.camera.stop()
+                self.camera = None
+                self.start_btn.setText("Start")
+                self.setting_btn.show()
+                self.reg_btn.show()
+                self.camera_label.hide()
         
 
     def update_frame(self, frame):
