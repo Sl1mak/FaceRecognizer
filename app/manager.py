@@ -9,10 +9,16 @@ from app.session import Session
 
 class WindowManager:
     def __init__(self):
-        self.models_list = {}
+        self.available_models = [
+            "VGG-Face",
+            "Facenet",
+            "Facenet512",
+            "ArcFace",
+            "SFace",
+            "GhostFaceNet"
+        ]
 
-        self.active_model_name = None
-        self.active_model_path = None
+        self.active_model_name = self.available_models[0]
 
         self.login_window = LoginWindow(self)
         self.register_window = RegisterWindow(self)
