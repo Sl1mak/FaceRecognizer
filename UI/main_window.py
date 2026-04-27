@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QPushButton
 from PyQt5.QtGui import QPixmap
 
 from app.session import Session
+from app.queries import getAllEmbeddings
 
 from core.webcam_pipeline import WebcamPipeline
 from core.detectors.deepface_detector import DeepFaceDetector
@@ -51,11 +52,12 @@ class MainWindow(QWidget):
 
         detector = DeepFaceDetector(self.manager.active_model_name, 0.5)
         drawer = Drawer()
+        embeddings = getAllEmbeddings()
 
         if self.camera is None:
             self.camera_label.show()
 
-            self.camera = WebcamPipeline(detector, drawer)
+            self.camera = WebcamPipeline(detector, drawer, embeddings)
             self.camera.frame_ready.connect(self.update_frame)
             self.camera.start()
 

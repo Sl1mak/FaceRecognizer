@@ -3,11 +3,14 @@ import cv2 as cv
 from PyQt5.QtGui import QImage
 from PyQt5.QtCore import pyqtSignal, QThread
 
+from core.recognizer import Recognizer
+
 class WebcamPipeline(QThread):
     frame_ready = pyqtSignal(QImage)
 
-    def __init__(self, detector, drawer, camera_index=0):
+    def __init__(self, detector, drawer, db_embeddings, camera_index=0):
         super().__init__()
+        self.recognizer = Recognizer(db_embeddings)
         self.camera_index = camera_index
         self.detector = detector
         self.drawer = drawer
@@ -24,6 +27,11 @@ class WebcamPipeline(QThread):
 
             if self.detector:
                 detections = self.detector.detect(frame)
+
+                for det in detections:
+                    name, score = self.recognizer.recognize(det["embedding"])
+                    det["label"] = name
+                    det["score"] = score
 
                 if self.drawer:
                     frame = self.drawer.draw(frame, detections)

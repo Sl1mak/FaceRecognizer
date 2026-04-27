@@ -3,6 +3,7 @@ from UI.register_window import RegisterWindow
 from UI.main_window import MainWindow
 from UI.settings_window import SettingsWindow
 from UI.models_window import ModelsWindow
+from UI.add_user_window import AddUserWindow
 
 from app.queries import addModel, getModels
 from app.session import Session
