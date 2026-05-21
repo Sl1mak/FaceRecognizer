@@ -56,7 +56,7 @@ def getModels(user_id):
     cursor = con.cursor()
 
     query = """
-    SELECT name, path
+    SELECT name
     FROM models
     WHERE user_id = %s
     """
@@ -73,33 +73,47 @@ def addUser(name, email, password, image_path, model_name="Facenet"):
     con = get_connection()
     cursor = con.cursor()
 
+    import bcrypt
+    import json
+    from deepface import DeepFace
+
     password_hash = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+
+    cursor.execute("""
+        INSERT INTO users (username, email, password_hash)
+        VALUES (%s, %s, %s)
+        RETURNING id
+    """, (name, email, password_hash))
+
+    user_id = cursor.fetchone()[0]
 
     embedding = DeepFace.represent(
         img_path=image_path,
         model_name=model_name,
         enforce_detection=True
     )[0]["embedding"]
-    
-    embedding_json = json.dumps(embedding)
 
-    query = """
-        INSERT INTO users (name, email, password_hash, embedding)
-        VALUES (%s, %s, %s, %s)
-    """
+    cursor.execute("""
+        INSERT INTO face_embeddings (user_id, embedding, model_name)
+        VALUES (%s, %s, %s)
+    """, (user_id, json.dumps(embedding), model_name))
 
-    cursor.execute(query, (name, email, password_hash, embedding_json))
     con.commit()
-
     cursor.close()
     con.close()
 
-def getAllEmbeddings():
+def getAllEmbeddings(model_name="Facenet"):
     con = get_connection()
     cursor = con.cursor()
 
-    query = "SELECT username embedding FROM users WHERE embedding IS NOT NULL"
+    query = """
+    SELECT u.username, f.embedding
+    FROM face_embeddings f
+    JOIN users u ON u.id = f.user_id
+    WHERE f.model_name = %s
+    """
 
+    cursor.execute(query, (model_name,))
     rows = cursor.fetchall()
 
     cursor.close()
@@ -107,6 +121,6 @@ def getAllEmbeddings():
 
     db_embeddings = {}
     for username, emb in rows:
-        db_embeddings[username] = json.loads(emb)
+        db_embeddings[username] = emb  # jsonb → уже list
 
     return db_embeddings

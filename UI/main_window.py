@@ -43,6 +43,7 @@ class MainWindow(QWidget):
         if Session.current_user and Session.current_user["role"] == "admin":
             if not self.reg_btn:
                 self.reg_btn = QPushButton("New user")
+                self.reg_btn.clicked.connect(lambda: self.manager.show("add_user"))
                 self.main_layout.addWidget(self.reg_btn)
 
     def start_process(self):

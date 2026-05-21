@@ -26,7 +26,7 @@ class SettingsWindow(QWidget):
         self.model_btn = QPushButton("Add")
         self.model_btn.setFixedWidth(40)
         self.model_row.addWidget(self.models_list)
-        self.model_row.addWidget(self.model_btn)
+        # self.model_row.addWidget(self.model_btn)
         self.main_layout.addLayout(self.model_row)
 
         self.setLayout(self.main_layout)

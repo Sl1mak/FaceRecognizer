@@ -19,13 +19,14 @@ class WindowManager:
             "GhostFaceNet"
         ]
 
-        self.active_model_name = self.available_models[0]
+        self.active_model_name = self.available_models[1]
 
         self.login_window = LoginWindow(self)
         self.register_window = RegisterWindow(self)
         self.main_window = MainWindow(self)
         self.settings_window = SettingsWindow(self)
         self.models_window = ModelsWindow(self)
+        self.add_user_window = AddUserWindow(self)
 
         self.windows = {
             "login": self.login_window,
@@ -33,6 +34,7 @@ class WindowManager:
             "main": self.main_window,
             "settings": self.settings_window,
             "models": self.models_window,
+            "add_user": self.add_user_window
         }
 
     def switch(self, window_name):
@@ -50,9 +52,8 @@ class WindowManager:
         return self.models_list
 
     def setActiveModel(self, name):
-        for model_name, path in self.models_list:
+        for model_name in self.models_list:
             if model_name == name:
                 self.active_model_name = model_name
-                self.active_model_path = path
-                print("Active model: ", self.active_model_name, self.active_model_path)
+                print("Active model: ", self.active_model_name)
                 break
