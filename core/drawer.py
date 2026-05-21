@@ -20,7 +20,6 @@ class Drawer:
         h, w = image.shape[:2]
 
         for det in detections:
-            # безопасно достаем данные
             x, y, bw, bh = det.get("bbox", [0, 0, 0, 0])
             label = det.get("label", "Unknown")
             score = round(det.get("score", 0.0), 2)

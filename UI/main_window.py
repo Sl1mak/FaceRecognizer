@@ -26,7 +26,7 @@ class MainWindow(QWidget):
         self.camera_label = QLabel(self)
 
         self.start_btn = QPushButton("Start")
-        self.setting_btn = QPushButton("Settings")
+        self.setting_btn = QPushButton("Settings (in progress)")
 
         self.main_layout.addWidget(self.camera_label)
         self.main_layout.addWidget(self.start_btn)
