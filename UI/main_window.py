@@ -28,7 +28,7 @@ class MainWindow(QWidget):
         self.camera_label = QLabel(self)
 
         self.start_btn = QPushButton("Start")
-        self.setting_btn = QPushButton("Settings (in progress)")
+        self.setting_btn = QPushButton("Settings")
 
         self.help_btn = QPushButton("⍰️")
         self.help_btn.setFixedSize(30, 30)
@@ -63,7 +63,7 @@ class MainWindow(QWidget):
 
         detector = DeepFaceDetector(self.manager.active_model_name, 0.5)
         drawer = Drawer()
-        embeddings = getAllEmbeddings()
+        embeddings = getAllEmbeddings(self.manager.active_model_name)
 
         if self.camera is None:
             self.main_layout.insertWidget(0, self.camera_label)

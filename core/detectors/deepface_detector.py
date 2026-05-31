@@ -5,7 +5,7 @@ from deepface import DeepFace
 from core.detectors.base_detector import BaseDetector
 
 class DeepFaceDetector(BaseDetector):
-    def __init__(self, model_name="Facenet", threshold=0.7):
+    def __init__(self, model_name, threshold=0.7):
         super().__init__(model_name, threshold)
 
         self.model_name = model_name

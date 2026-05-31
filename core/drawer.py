@@ -11,7 +11,7 @@ class Drawer:
     def get_color(self, score):
         if score < 0.6:
             return (0, 0, 255)     
-        elif score < 0.75:
+        elif score < 0.7:
             return (0, 255, 255)     
         else:
             return (0, 255, 0)       

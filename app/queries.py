@@ -69,7 +69,7 @@ def getModels(user_id):
 
     return models
 
-def addUser(name, email, password, image_path, model_name="Facenet"):
+def addUser(name, email, password, image_path, selected_models):
     con = get_connection()
     cursor = con.cursor()
 
@@ -86,23 +86,24 @@ def addUser(name, email, password, image_path, model_name="Facenet"):
     """, (name, email, password_hash))
 
     user_id = cursor.fetchone()[0]
+    for model_name in selected_models:
+        try:
+            embedding = DeepFace.represent(
+                img_path=image_path,
+                model_name=model_name,
+                enforce_detection=True
+            )[0]["embedding"]
+        except Exception:
+            raise ValueError("No face detected in the image")
 
-    try:
-        embedding = DeepFace.represent(
-            img_path=image_path,
-            model_name=model_name,
-            enforce_detection=True
-        )[0]["embedding"]
-    except Exception:
-        raise ValueError("No face detected in the image")
-
-    try:
-        cursor.execute("""
-            INSERT INTO face_embeddings (user_id, embedding, model_name)
-            VALUES (%s, %s, %s)
-        """, (user_id, json.dumps(embedding), model_name))
-    except Exception:
-        raise ValueError("Failed to extract embedding from the image")
+        try:
+            cursor.execute("""
+                INSERT INTO face_embeddings (user_id, embedding, model_name)
+                VALUES (%s, %s, %s)
+            """, (user_id, json.dumps(embedding), model_name))
+        except Exception:
+            con.rollback()
+            raise ValueError("Failed to extract embedding from the image")
 
     con.commit()
     cursor.close()

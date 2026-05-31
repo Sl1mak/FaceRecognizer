@@ -20,7 +20,7 @@ class WindowManager:
             "GhostFaceNet"
         ]
 
-        self.active_model_name = self.available_models[1]
+        self.active_model_name = None
 
         self.login_window = LoginWindow(self)
         self.register_window = RegisterWindow(self)
@@ -55,11 +55,8 @@ class WindowManager:
         return self.models_list
 
     def setActiveModel(self, name):
-        for model_name in self.models_list:
-            if model_name == name:
-                self.active_model_name = model_name
-                print("Active model: ", self.active_model_name)
-                break
+        self.active_model_name = name
+        print("Active model:", self.active_model_name)
 
     def help(self, text):
         self.help_window.text.setText(text)

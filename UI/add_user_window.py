@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QPushButton, QFileDialog, QMessageBox, QHBoxLayout
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLineEdit, QPushButton, QFileDialog, QMessageBox, QHBoxLayout, QCheckBox
 
 from app.queries import addUser
 
@@ -6,6 +6,7 @@ class AddUserWindow(QWidget):
     def __init__(self, manager):
         super().__init__()
         self.manager = manager
+        self.model_cb = {}
         self.init_UI()
 
     def init_UI(self):
@@ -15,6 +16,11 @@ class AddUserWindow(QWidget):
         self.main_layout = QVBoxLayout()
         self.main_layout.setContentsMargins(20, 20, 20, 20)
         self.main_layout.setSpacing(20)
+        self.inputs_layout = QVBoxLayout()
+        self.inputs_layout.setSpacing(15)
+        self.models_layout = QVBoxLayout()
+        self.models_layout.setSpacing(15)
+        self.im_layout = QHBoxLayout()
 
         self.name_input = QLineEdit()
         self.email_input = QLineEdit()
@@ -41,15 +47,24 @@ class AddUserWindow(QWidget):
         self.media_file_btn.clicked.connect(lambda: self.file_dialog(self.media_path, "Choose media file", "All files (*)"))
         self.submit_btn.clicked.connect(lambda: self.submit())
 
-        self.main_layout.addWidget(self.name_input)
-        self.main_layout.addWidget(self.email_input)
-        self.main_layout.addWidget(self.password_input)
+        self.inputs_layout.addWidget(self.name_input)
+        self.inputs_layout.addWidget(self.email_input)
+        self.inputs_layout.addWidget(self.password_input)
+        self.inputs_layout.addWidget(self.media_path)
+        self.inputs_layout.addWidget(self.media_file_btn)
 
-        self.main_layout.addWidget(self.media_path)
-        self.main_layout.addWidget(self.media_file_btn)
-        self.main_layout.addWidget(self.submit_btn)
-        self.main_layout.addLayout(self.bottom_layout)
+        for model in self.manager.available_models:
+            model_checkbox = QCheckBox(model)
+            self.models_layout.addWidget(model_checkbox)
+            self.model_cb[model] = model_checkbox
 
+
+        self.im_layout.addLayout(self.inputs_layout)
+        self.im_layout.addLayout(self.models_layout)
+
+        self.main_layout.addLayout(self.im_layout)
+        self.inputs_layout.addWidget(self.submit_btn)
+        self.inputs_layout.addLayout(self.bottom_layout)
         self.setLayout(self.main_layout)
 
     def file_dialog(self, target_widget, title="Choose file", filter="All files (*)"):
@@ -62,13 +77,20 @@ class AddUserWindow(QWidget):
         email_input = self.email_input.text()
         password_input = self.password_input.text()
         media_path = self.media_path.text()
+
+        selected_models = [
+            model
+            for model, checkbox in self.model_cb.items()
+            if checkbox.isChecked()
+        ]
+
         if not all([name_input, email_input, password_input, media_path]):
             QMessageBox.critical(self, "Error", "Name, email, password or media path is empty")
         elif len(password_input) < 8:
             QMessageBox.critical(self, "Error", "Password is too short")
         else:
             try:
-                addUser(name_input, email_input, password_input, media_path)
+                addUser(name_input, email_input, password_input, media_path, selected_models)
                 QMessageBox.information(self, "Success", "User added successfully")
             except Exception as e:
                 QMessageBox.critical(self, "Error", str(e))

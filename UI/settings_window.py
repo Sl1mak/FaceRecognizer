@@ -40,7 +40,7 @@ class SettingsWindow(QWidget):
 
         self.setLayout(self.main_layout)
 
-        self.submit_btn.clicked.connect(lambda: self.manager.show("models"))
+        self.submit_btn.clicked.connect(lambda: self.model_selected(self.models_list.currentText()))
     
     def update_user(self):
         self.models_list.clear()
@@ -52,4 +52,6 @@ class SettingsWindow(QWidget):
             self.manager.setActiveModel(models[0][0])
 
     def model_selected(self, name):
+        print("Selected:", name)
         self.manager.setActiveModel(name)
+
