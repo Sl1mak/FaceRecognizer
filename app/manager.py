@@ -4,6 +4,7 @@ from UI.main_window import MainWindow
 from UI.settings_window import SettingsWindow
 from UI.models_window import ModelsWindow
 from UI.add_user_window import AddUserWindow
+from UI.help_window import HelpWindow
 
 from app.queries import addModel, getModels
 from app.session import Session
@@ -27,6 +28,7 @@ class WindowManager:
         self.settings_window = SettingsWindow(self)
         self.models_window = ModelsWindow(self)
         self.add_user_window = AddUserWindow(self)
+        self.help_window = HelpWindow(self)
 
         self.windows = {
             "login": self.login_window,
@@ -34,7 +36,8 @@ class WindowManager:
             "main": self.main_window,
             "settings": self.settings_window,
             "models": self.models_window,
-            "add_user": self.add_user_window
+            "add_user": self.add_user_window,
+            "help": self.help_window
         }
 
     def switch(self, window_name):
@@ -57,3 +60,7 @@ class WindowManager:
                 self.active_model_name = model_name
                 print("Active model: ", self.active_model_name)
                 break
+
+    def help(self, text):
+        self.help_window.text.setText(text)
+        self.show("help")

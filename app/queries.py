@@ -87,16 +87,22 @@ def addUser(name, email, password, image_path, model_name="Facenet"):
 
     user_id = cursor.fetchone()[0]
 
-    embedding = DeepFace.represent(
-        img_path=image_path,
-        model_name=model_name,
-        enforce_detection=True
-    )[0]["embedding"]
+    try:
+        embedding = DeepFace.represent(
+            img_path=image_path,
+            model_name=model_name,
+            enforce_detection=True
+        )[0]["embedding"]
+    except Exception:
+        raise ValueError("No face detected in the image")
 
-    cursor.execute("""
-        INSERT INTO face_embeddings (user_id, embedding, model_name)
-        VALUES (%s, %s, %s)
-    """, (user_id, json.dumps(embedding), model_name))
+    try:
+        cursor.execute("""
+            INSERT INTO face_embeddings (user_id, embedding, model_name)
+            VALUES (%s, %s, %s)
+        """, (user_id, json.dumps(embedding), model_name))
+    except Exception:
+        raise ValueError("Failed to extract embedding from the image")
 
     con.commit()
     cursor.close()

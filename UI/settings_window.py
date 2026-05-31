@@ -23,15 +23,24 @@ class SettingsWindow(QWidget):
         self.models_list = QComboBox()
         self.models_list.currentTextChanged.connect(self.model_selected)
 
-        self.model_btn = QPushButton("Add")
-        self.model_btn.setFixedWidth(40)
+        self.submit_btn = QPushButton("Submit")
+        self.submit_btn.setFixedWidth(60)
+        self.help_btn = QPushButton("⍰️")
+        self.help_btn.setFixedSize(30, 30)
+        self.help_btn.clicked.connect(lambda: self.manager.help("Выеберите модель для распознавания лица и нажмите кнопку Submit."))
+
+        self.bottom_layout = QHBoxLayout()
+        self.bottom_layout.addWidget(self.submit_btn)
+        self.bottom_layout.addStretch()
+        self.bottom_layout.addWidget(self.help_btn)
+
         self.model_row.addWidget(self.models_list)
-        # self.model_row.addWidget(self.model_btn)
         self.main_layout.addLayout(self.model_row)
+        self.main_layout.addLayout(self.bottom_layout)
 
         self.setLayout(self.main_layout)
 
-        self.model_btn.clicked.connect(lambda: self.manager.show("models"))
+        self.submit_btn.clicked.connect(lambda: self.manager.show("models"))
     
     def update_user(self):
         self.models_list.clear()

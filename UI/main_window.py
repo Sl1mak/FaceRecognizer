@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QPushButton
+from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QPushButton, QHBoxLayout
 from PyQt5.QtGui import QPixmap
 
 from app.session import Session
@@ -18,19 +18,29 @@ class MainWindow(QWidget):
         self.init_UI()
 
     def init_UI(self):
-        self.resize(400, 300)
+        self.resize(300, 200)
         self.setWindowTitle("FR:Main")
 
         self.main_layout = QVBoxLayout()
+        self.main_layout.setContentsMargins(10, 10, 10, 5)
+        self.main_layout.setSpacing(10)
 
         self.camera_label = QLabel(self)
 
         self.start_btn = QPushButton("Start")
         self.setting_btn = QPushButton("Settings (in progress)")
 
-        self.main_layout.addWidget(self.camera_label)
+        self.help_btn = QPushButton("⍰️")
+        self.help_btn.setFixedSize(30, 30)
+        self.help_btn.clicked.connect(lambda: self.manager.help("Для начала работы нжамите на кнопку Start"))
+
+        self.bottom_layout = QHBoxLayout()
+        self.bottom_layout.addStretch()
+        self.bottom_layout.addWidget(self.help_btn)
+
         self.main_layout.addWidget(self.start_btn)
         self.main_layout.addWidget(self.setting_btn)
+        self.main_layout.addLayout(self.bottom_layout)
 
         self.camera_label.hide()
 
@@ -44,7 +54,7 @@ class MainWindow(QWidget):
             if not self.reg_btn:
                 self.reg_btn = QPushButton("New user")
                 self.reg_btn.clicked.connect(lambda: self.manager.show("add_user"))
-                self.main_layout.addWidget(self.reg_btn)
+                self.main_layout.insertWidget(2, self.reg_btn)
 
     def start_process(self):
         if not self.manager.active_model_name:
@@ -56,6 +66,7 @@ class MainWindow(QWidget):
         embeddings = getAllEmbeddings()
 
         if self.camera is None:
+            self.main_layout.insertWidget(0, self.camera_label)
             self.camera_label.show()
 
             self.camera = WebcamPipeline(detector, drawer, embeddings)
@@ -66,6 +77,7 @@ class MainWindow(QWidget):
             self.setting_btn.hide()
             if self.reg_btn:
                 self.reg_btn.hide()
+            self.help_btn.hide()
 
         else:
             self.camera.stop()
@@ -75,7 +87,9 @@ class MainWindow(QWidget):
             self.setting_btn.show()
             if self.reg_btn:
                 self.reg_btn.show()
+            self.help_btn.show()
 
+            self.main_layout.removeWidget(self.camera_label)
             self.camera_label.hide()
 
     def update_frame(self, frame):

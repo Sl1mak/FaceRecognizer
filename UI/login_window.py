@@ -5,11 +5,14 @@ from PyQt5.QtWidgets import (
 from app.queries import login
 from app.session import Session
 
+from UI.help_window import HelpWindow
+
 class LoginWindow(QWidget):
     def __init__(self, manager):
         super().__init__()
         self.init_UI()
         self.manager = manager
+        self.help_window = HelpWindow(self.manager)
 
     def init_UI(self):
         self.resize(400, 200)
@@ -37,11 +40,15 @@ class LoginWindow(QWidget):
 
         self.login_btn_layout = QHBoxLayout()
         self.login_btn = QPushButton("Login")
+        self.help_btn = QPushButton("⍰️")
         self.login_btn.setStyleSheet("background-color: #a6f299; color: black; border: none;")
         self.login_btn_layout.addStretch()
         self.login_btn.setFixedSize(100, 30)
+        self.help_btn.setFixedSize(30, 30)
+        self.login_btn_layout.addStretch()
         self.login_btn_layout.addWidget(self.login_btn)
         self.login_btn_layout.addStretch()
+        self.login_btn_layout.addWidget(self.help_btn)
 
         self.inputs_layout.addLayout(self.login_btn_layout)
 
@@ -52,6 +59,7 @@ class LoginWindow(QWidget):
         self.setLayout(self.main_layout)
 
         self.login_btn.clicked.connect(self.login)
+        self.help_btn.clicked.connect(lambda: self.manager.help("Введите логин и пароль"))
 
     def center(self):
         qr = self.frameGeometry()
