@@ -14,12 +14,16 @@ class Recognizer:
         best_name = "Unknown"
         best_score = -1
 
-        for name, db_emb in self.db_embeddings.items():
-            sim = self.cosine_similarity(embedding, db_emb)
-
-            if sim > best_score:
-                best_score = sim
-                best_name = name
+        for name, embeddings in self.db_embeddings.items():
+            user_best_score = -1
+            for db_emb in embeddings:
+                sim = self.cosine_similarity(embedding, db_emb)
+                if sim > user_best_score:
+                    user_best_score = sim
+                
+        if user_best_score > best_score:
+            best_score = user_best_score
+            best_name = name
 
         if best_score < self.threshold:
             return "Unknown", float(best_score)

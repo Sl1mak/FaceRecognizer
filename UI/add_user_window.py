@@ -7,6 +7,7 @@ class AddUserWindow(QWidget):
         super().__init__()
         self.manager = manager
         self.model_cb = {}
+        self.selected_files = []
         self.init_UI()
 
     def init_UI(self):
@@ -68,15 +69,16 @@ class AddUserWindow(QWidget):
         self.setLayout(self.main_layout)
 
     def file_dialog(self, target_widget, title="Choose file", filter="All files (*)"):
-        file_path, _ = QFileDialog.getOpenFileName(self, title, "", filter)
-        if file_path:
-            target_widget.setText(file_path)
+        files, _ = QFileDialog.getOpenFileNames(self, title, "", filter)
+        if files:
+            self.selected_files = files
+            target_widget.setText(f"Selected {len(files)} files")
 
     def submit(self):
         name_input = self.name_input.text()
         email_input = self.email_input.text()
         password_input = self.password_input.text()
-        media_path = self.media_path.text()
+        media_paths = self.selected_files
 
         selected_models = [
             model
@@ -84,13 +86,13 @@ class AddUserWindow(QWidget):
             if checkbox.isChecked()
         ]
 
-        if not all([name_input, email_input, password_input, media_path]):
+        if not all([name_input, email_input, password_input]) or not media_paths:
             QMessageBox.critical(self, "Error", "Name, email, password or media path is empty")
         elif len(password_input) < 8:
             QMessageBox.critical(self, "Error", "Password is too short")
         else:
             try:
-                addUser(name_input, email_input, password_input, media_path, selected_models)
+                addUser(name_input, email_input, password_input, self.selected_files, selected_models)
                 QMessageBox.information(self, "Success", "User added successfully")
             except Exception as e:
                 QMessageBox.critical(self, "Error", str(e))
